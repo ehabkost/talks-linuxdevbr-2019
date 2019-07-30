@@ -26,17 +26,62 @@ Note:
 
 ## CPUID
 
+<pre><code class="lang-shell" data-trim data-noescape>
+eax in: 0x00000000, eax = 00000016 ebx = 756e6547 ecx = 6c65746e edx = 49656e69
+eax in: 0x00000001, eax = 000406e3 ebx = 00100800 ecx = 7ffafbff edx = bfebfbff
+eax in: 0x00000002, eax = 76036301 ebx = 00f0b5ff ecx = 00000000 edx = 00c30000
+eax in: 0x00000003, eax = 00000000 ebx = 00000000 ecx = 00000000 edx = 00000000
+eax in: 0x00000004, eax = 1c004121 ebx = 01c0003f ecx = 0000003f edx = 00000000
+eax in: 0x00000005, eax = 00000040 ebx = 00000040 ecx = 00000003 edx = 11142120
+eax in: 0x00000006, eax = 000027f7 ebx = 00000002 ecx = 00000009 edx = 00000000
+eax in: 0x00000007, eax = 00000000 ebx = 00000000 ecx = 00000000 edx = 00000000
+eax in: 0x00000008, eax = 00000000 ebx = 00000000 ecx = 00000000 edx = 00000000
+<em>[...]</em>
+</code></pre>
+
 
 ## CPU flags
+
+<pre><code class="lang-shell" data-trim data-noescape>
+$ cat /proc/cpuinfo
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 78
+model name      : Intel(R) Core(TM) i7-6600U CPU @ 2.60GHz
+stepping        : 3
+<mark>flags</mark>           : <mark>fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf tsc_known_freq pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb invpcid_single pti ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm mpx rdseed adx smap clflushopt intel_pt xsaveopt xsavec xgetbv1 xsaves dtherm ida arat pln pts hwp hwp_notify hwp_act_window hwp_epp md_clear flush_l1d</mark>
+<em>[...]</em>
+</code></pre>
 
 
 ## CPU models: QEMU
 
+<pre><code class="lang-shell" data-trim data-noescape>
+$ qemu-system-x86_64 -cpu help
+Available CPUs:
+x86 486
+x86 Broadwell             Intel Core Processor (Broadwell)
+x86 Cascadelake-Server    Intel Xeon Processor (Cascadelake)
+x86 Conroe                Intel Celeron_4x0 (Conroe/Merom Class Core 2)
+x86 EPYC                  AMD EPYC Processor
+x86 Haswell               Intel Core Processor (Haswell)
+x86 Icelake-Client        Intel Core Processor (Icelake)
+<em>[...]</em>
+</code></pre>
+
 
 ## CPU models: libvirt
 
+<pre><code class="lang-xml" data-trim>
+&lt;cpu match='exact'>
+  &lt;model>Broadwell&lt;/model>
+&lt;/cpu>
+</code></pre>
+
 
 ## CPU models: virt-manager
+
+<img src="virt-manager-cpu-config.png" style="border: none; box-shadow: none; width: 55%; height: 100%;">
 
 
 ## Special CPU mode: host-passthrough
