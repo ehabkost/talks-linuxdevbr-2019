@@ -11,8 +11,8 @@ Note:
 
 ## Contents
 
-* KVM CPU configuration abstractions
 * CPU vulnerabilities
+* KVM CPU configuration abstractions
 * When things fall apart
 * New abstractions
 
@@ -53,23 +53,29 @@ stepping        : 3
 </code></pre>
 
 
-## Simplest mode: host passthrough
+## KVM simplest mode: host passthrough
 
+* QEMU:
 <pre style="width: 23em;"><code class="lang-shell" data-trim data-noescape>
-$ qemu-system-x86_64 -cpu host <em>[...]</em>
+$ qemu-system-x86_64 <mark>-cpu host</mark> <em>[...]</em>
 </code></pre>
 
-* All flags supported by KVM are always exposed to guest OS
+* libvirt:
+<pre style="width: 23em;"><code class="lang-xml" data-trim data-noescape>
+&lt;cpu mode='<mark>host-passthrough</mark>' />
+</code></pre>
+
+Guest will see all flags supported by the host
 
 Note:
-TODO: libvirt example
 
 
 ## Live Migration
 
-* VMs can be migrated to different hosts while running
-* Guest OS doesn't expect CPUID data to change
-* Hosts may have completely different sets of features
+* OSes don't expect CPUID data to change at runtime
+* VMs can be moved to different hosts <b>while running</b>
+* <!-- .element: class="fragment" --> Can't work with <b>host-passthrough</b>
+* <!-- .element: class="fragment" --> Solution: <b>predefined CPU models</b>
 
 Note:
 TODO: live migration animation
@@ -91,43 +97,63 @@ x86 Icelake-Client        Intel Core Processor (Icelake)
 </code></pre>
 
 
+## CPU models: QMP
+
+<pre><code class="lang-json" data-trim data-noescape>
+{ "execute": "query-cpu-definitions", "arguments": {} }
+{ ...
+  { "name": "Skylake-Client", "<mark>unavailable-features</mark>": [] },
+  { "name": "Skylake-Server",
+    "<mark>unavailable-features</mark>": [ "avx512f", "avx512dq", "clwb", "avx512cd", "avx512bw",
+                              "avx512vl", "pku", "avx512f", "avx512f", "avx512f", "pku" ]}
+  ...
+}
+</code></pre>
 
 
-## CPU models: libvirt
+## CPU models: libvirt XML
 
 <pre><code class="lang-xml" data-trim>
 &lt;cpu match='exact'>
-  &lt;model>Broadwell&lt;/model>
+  &lt;model fallback='forbid'>Skylake-Client&lt;/model>
 &lt;/cpu>
 </code></pre>
 
 
-## CPU models: virt-manager
+## CPU models: libvirt API
+
+<pre><code class="lang-c" data-trim>
+char *virConnectBaselineHypervisorCPU(virConnectPtr conn,
+                                      const char * emulator,
+                                      const char * arch,
+                                      const char * machine,
+                                      const char * virttype,
+                                      const char ** xmlCPUs,
+                                      unsigned int ncpus,
+                                      unsigned int flags)
+</code></pre>
+
+<em>"Computes the most feature-rich CPU which is compatible with all given CPUs and can be provided by the specified hypervisor"</em>
+
+
+## CPU models: user interface (virt-manager)
 
 <img src="virt-manager-cpu-config.png" style="border: none; box-shadow: none; width: 55%; height: 100%;">
 
 
 ## Special CPU model: host-model
 
+<pre style="width: 16em;"><code class="lang-xml" data-trim>
+&lt;cpu mode='host-model'>
+   ...
+&lt;code>
+</code></pre>
+
+* <b>copies</b> host features to XML
+* Allows live migration
 
 
-# CPU vulnerabilities
-
-
-## Spectre / Meltdown (Jan 2018)
-
-
-## SSB (May 2018)
-
-
-## L1TF (Aug 2018)
-
-
-## MDS (May 2019)
-
-
-
-# When everything falls apart
+# When things fall apart
 
 
 # Law of Leaky Abstractions
@@ -140,11 +166,44 @@ Note:
 TODO: "what breaks" on each slide below
 
 
-## -noTSX
+## Intel TSX Errata
 
-Unexpected facts:
-* New CPUs may have less features than older CPUs
-* Installing a software update will make features go away
+* Microcode update will disable TSX features completely
+
+* <!-- .element: class="fragment" data-fragment-index="2" --> Unexpected facts: <!-- .element: class="fragment" data-fragment-index="2" -->
+  * Installing a software update will make features go away <!-- .element: class="fragment" data-fragment-index="2" -->
+  * Existing VMs may be impossible to run <!-- .element: class="fragment" data-fragment-index="2" -->
+
+
+## TSX Errata: solution
+
+* Existing CPU models (Haswell, Broadwell) keep TSX features
+* New Haswell-noTSX and Broadwell-noTSX CPU models
+
+
+## CPU vulnerabilities
+
+
+## Spectre / Meltdown (Jan 2018)
+
+* Meltdown: software-only mitigation
+  * No KVM-specific changes needed
+  * Both host and guest OS need updates
+  
+## Spectre mitigation: hardware + microcode
+
+* Spectre mitigation requires a microcode update
+* Adds a new CPUID flag: <b></b>
+
+
+## SSB (May 2018)
+
+
+## L1TF (Aug 2018)
+
+
+## MDS (May 2019)
+
 
 
 ## -IBRS / -IBPB
@@ -187,3 +246,5 @@ Things get messy.
 # References
 
 * [Vulnerabilities Associated with CPU Speculative Execution](https://vuls.cert.org/confluence/display/Wiki/Vulnerabilities+Associated+with+CPU+Speculative+Execution)
+* [QEMU and the Spectre and Meltdown attacks](https://www.qemu.org/2018/01/04/spectre/)
+* [Intel security vulnerabilities](https://www.intel.com/content/www/us/en/architecture-and-technology/facts-about-side-channel-analysis-and-intel-products.html)
