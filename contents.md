@@ -16,7 +16,6 @@ Note:
 * When things fall apart
 * New abstractions
 
-
 Note:
 
 
@@ -27,6 +26,7 @@ Note:
 ## CPUID
 
 <pre><code class="lang-shell" data-trim data-noescape>
+$ x86info -r
 eax in: 0x00000000, eax = 00000016 ebx = 756e6547 ecx = 6c65746e edx = 49656e69
 eax in: 0x00000001, eax = 000406e3 ebx = 00100800 ecx = 7ffafbff edx = bfebfbff
 eax in: 0x00000002, eax = 76036301 ebx = 00f0b5ff ecx = 00000000 edx = 00c30000
@@ -35,7 +35,6 @@ eax in: 0x00000004, eax = 1c004121 ebx = 01c0003f ecx = 0000003f edx = 00000000
 eax in: 0x00000005, eax = 00000040 ebx = 00000040 ecx = 00000003 edx = 11142120
 eax in: 0x00000006, eax = 000027f7 ebx = 00000002 ecx = 00000009 edx = 00000000
 eax in: 0x00000007, eax = 00000000 ebx = 00000000 ecx = 00000000 edx = 00000000
-eax in: 0x00000008, eax = 00000000 ebx = 00000000 ecx = 00000000 edx = 00000000
 <em>[...]</em>
 </code></pre>
 
@@ -54,6 +53,28 @@ stepping        : 3
 </code></pre>
 
 
+## Simplest mode: host passthrough
+
+<pre style="width: 23em;"><code class="lang-shell" data-trim data-noescape>
+$ qemu-system-x86_64 -cpu host <em>[...]</em>
+</code></pre>
+
+* All flags supported by KVM are always exposed to guest OS
+
+Note:
+TODO: libvirt example
+
+
+## Live Migration
+
+* VMs can be migrated to different hosts while running
+* Guest OS doesn't expect CPUID data to change
+* Hosts may have completely different sets of features
+
+Note:
+TODO: live migration animation
+
+
 ## CPU models: QEMU
 
 <pre><code class="lang-shell" data-trim data-noescape>
@@ -70,6 +91,8 @@ x86 Icelake-Client        Intel Core Processor (Icelake)
 </code></pre>
 
 
+
+
 ## CPU models: libvirt
 
 <pre><code class="lang-xml" data-trim>
@@ -82,9 +105,6 @@ x86 Icelake-Client        Intel Core Processor (Icelake)
 ## CPU models: virt-manager
 
 <img src="virt-manager-cpu-config.png" style="border: none; box-shadow: none; width: 55%; height: 100%;">
-
-
-## Special CPU mode: host-passthrough
 
 
 ## Special CPU model: host-model
