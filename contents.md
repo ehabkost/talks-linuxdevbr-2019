@@ -3,6 +3,9 @@
 Eduardo Habkost &lt;ehabkost\@redhat.com&gt;<br>
 <br>
 <a href="https://linuxdev-br.net/">Linux Developer Conference Brazil 2019</a>
+<br>
+<br>
+Slides: https://habkost.net/talks/linuxdevbr-2019/
 
 Note: Hello, my name is Eduardo.  I work for Red Hat and I'm the
 maintainer of the x86 CPU code and a few other subsystems in
@@ -479,6 +482,28 @@ Note: ...but it will be enabled automatically if using host-model.
 # New Abstractions
 
 
+## MSR features (arch-capabilities)
+
+* CPU capabilities reported through a new MSR (IA32_ARCH_CAPABILITIES)
+* "MSR-based features" added to QEMU 4.0
+* Not required for mitigation
+  * Useful to avoid unnecessary overhead
+
+Note:
+Required changes on KVM, QEMU, libvirt.
+
+
+## MSR features: usage
+
+<pre style="width: 16em;"><code class="lang-xml" data-trim>
+&lt;cpu mode='host-model'>
+</code></pre>
+
+<pre><code class="lang-shell" data-trim data-noescape>
+$ qemu-system-x86_64 -cpu Skylake-Client-IBRS<mark>,+arch-capabilities,+mds-no,+ssb-no</mark> <em>[...]</em>
+</code></pre>
+
+
 ## CPU model usability
 
 * Manual configuration is tricky
@@ -510,7 +535,14 @@ choose the most appropriate CPU model version.
 
 
 
+# Thank You!
+
+Slides: https://habkost.net/talks/linuxdevbr-2019/
+
+
 # References
+
+Slides: https://habkost.net/talks/linuxdevbr-2019/
 
 * [Vulnerabilities Associated with CPU Speculative Execution](https://vuls.cert.org/confluence/display/Wiki/Vulnerabilities+Associated+with+CPU+Speculative+Execution)
 * [QEMU and the Spectre and Meltdown attacks](https://www.qemu.org/2018/01/04/spectre/)
@@ -521,14 +553,6 @@ choose the most appropriate CPU model version.
 
 
 # Appendix
-
-
-## MSR features (arch-capabilities)
-
-* CPU capabilities reported through a new MSR (IA32_ARCH_CAPABILITIES)
-* "MSR-based features" added to QEMU 4.0
-* Not required for mitigation
-  * just useful to avoid unnecessary mitigation overhead
 
 
 ## Negative features
