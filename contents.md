@@ -36,6 +36,17 @@ detail, but the focus here is to show how KVM, QEMU, and the rest
 of the virtualization stack are affected by them.
 
 
+# Layers
+
+<table class="layers">
+<tr class="visible"><td>management app</td></tr>
+<tr class="visible"><td>libvirt</td></tr>
+<tr class="visible"><td>QEMU</td></tr>
+<tr class="visible"><td>KVM (kernel)</td></tr>
+<tr class="visible"><td>Hardware (CPU)</td></tr>
+</table>
+
+
 
 # CPU configuration abstractions
 

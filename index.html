@@ -14,6 +14,24 @@
 		<link rel="stylesheet" href="lib/css/sunburst.css">
 
 		<style>
+		table.layers tr { border: none; }
+		table.layers td:first-child {
+			text-align: center;
+			border: 2px solid black !important;
+			color: gray;
+		}
+		table.layers tr.visible td {
+			color: black;
+		}
+		table.layers tr.hidden td {
+			color: #dddddd;
+			background-color: #dddddd;
+		}
+		table.layers tr.current td:first-child {
+			background-color: lightblue;
+			color: black;
+			font-weight: bold;
+		}
 		code mark, code mark * { color: white !important; background-color: #202020 !important; font-weight: bold !important; }
 		.reveal h1,
 		.reveal h2,
