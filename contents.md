@@ -36,7 +36,7 @@ detail, but the focus here is to show how KVM, QEMU, and the rest
 of the virtualization stack are affected by them.
 
 
-# Layers
+# Virtualization stack
 
 <table class="layers">
 <tr class="visible"><td>management app</td></tr>
