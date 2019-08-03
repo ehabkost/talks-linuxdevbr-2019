@@ -315,9 +315,12 @@ TODO: "what breaks" on each slide below
 
 * <!-- .element: class="fragment" data-fragment-index="2" --> Unexpected: <!-- .element: class="fragment" data-fragment-index="2" -->
   * Installing a software update will make features go away <!-- .element: class="fragment" data-fragment-index="2" -->
-  * Existing VMs may be impossible to run <!-- .element: class="fragment" data-fragment-index="2" -->
+  * Existing VMs may become impossible to run <!-- .element: class="fragment" data-fragment-index="2" -->
 
-Note: let's start with a simple example that is not even a CPU
+Note:
+* Not a vulnerability
+
+Let's start with a simple example that is not even a CPU
 vulnerability.  In 2014, Intel found serious issues in the TSX
 feature and released a microcode update that disabled the feature
 entirely.
@@ -479,23 +482,10 @@ Note: Like in the case of SSBD, the new <b>MD CLEAR</b> feature needs to be enab
 Note: ...but it will be enabled automatically if using host-model.
 
 
-## Summary: recommendations
-
-* Keep <b>both</b> host and guest OS up to date
-* First option: use <b>host-passthrough</b>
-* Alternative: use <b>host-model</b>
-* Last resort: careful (manual) CPU model configuration
-* L1TF might require special care
-* Always check <code>/sys/devices/system/cpu/vulnerabilities/</code>
-
-
-
-# New Abstractions
-
-
 ## MSR features (arch-capabilities)
 
 * CPU capabilities reported through a new MSR (IA32_ARCH_CAPABILITIES)
+* Indicate when the CPU is not vulnerable
 * "MSR-based features" added to QEMU 4.0
 * Not required for mitigation
   * Useful to avoid unnecessary overhead
@@ -513,6 +503,9 @@ Required changes on KVM, QEMU, libvirt.
 <pre><code class="lang-shell" data-trim data-noescape>
 $ qemu-system-x86_64 -cpu Skylake-Client-IBRS<mark>,+arch-capabilities,+mds-no,+ssb-no</mark> <em>[...]</em>
 </code></pre>
+
+
+# New Abstractions
 
 
 ## CPU model usability
@@ -543,6 +536,18 @@ between the multiple CPU model versions and the main CPU model
 name will be exposed to the other software components.  This will
 allow management software to expose a simple UI and automatically
 choose the most appropriate CPU model version.
+
+
+
+## Summary: recommendations
+
+* Keep <b>both</b> host and guest OS up to date
+* First option: use <b>host-passthrough</b>
+* Alternative: use <b>host-model</b>
+* Last resort: careful (manual) CPU model configuration
+  * Work in progress to improve this
+* L1TF might require special care
+* Always check <code>/sys/devices/system/cpu/vulnerabilities/</code>
 
 
 
