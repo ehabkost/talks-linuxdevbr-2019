@@ -258,7 +258,7 @@ CPU model option for virt-manager.
 &lt;code>
 </code></pre>
 
-* <b>copies</b> host features to XML
+* <b>Copies</b> host features to XML
 * Allows live migration
 
 Note: finally, we have one mode where you can get the best of
@@ -297,7 +297,7 @@ TODO: "what breaks" on each slide below
 
 ## Intel TSX Errata (2014)
 
-* Microcode update will disable TSX features completely
+* Microcode update disables TSX features completely
 
 * <!-- .element: class="fragment" data-fragment-index="2" --> Unexpected: <!-- .element: class="fragment" data-fragment-index="2" -->
   * Installing a software update will make features go away <!-- .element: class="fragment" data-fragment-index="2" -->
@@ -522,9 +522,13 @@ choose the most appropriate CPU model version.
 
 # Appendix
 
+
 ## MSR features (arch-capabilities)
 
-* 
+* CPU capabilities reported through a new MSR (IA32_ARCH_CAPABILITIES)
+* "MSR-based features" added to QEMU 4.0
+* Not required for mitigation
+  * just useful to avoid unnecessary mitigation overhead
 
 
 ## Negative features
